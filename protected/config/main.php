@@ -51,7 +51,9 @@ return array(
 		// database settings are configured in database.php
 		//'db'=>require(dirname(__FILE__).'/database.php'),
         'db'=> array(
-            'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/blog.db',
+            'connectionString' =>
+                'sqlite:'.dirname(__FILE__)
+                .'/../data/blog.db',
             'tablePrefix' => 'tbl_'
         ),
 
