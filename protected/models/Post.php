@@ -5,6 +5,7 @@
  *
  * The followings are the available columns in table '{{post}}':
  * @property integer $id
+ * @property string $title
  * @property string $content
  * @property string $tags
  * @property integer $status
@@ -77,6 +78,7 @@ class Post extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'ID',
+            'title' => 'Title',
             'content' => 'Content',
             'tags' => 'Tags',
             'status' => 'Status',
@@ -104,6 +106,7 @@ class Post extends CActiveRecord {
         $criteria = new CDbCriteria;
 
         $criteria->compare('id', $this->id);
+        $criteria->compare('title', $this->title, true);
         $criteria->compare('content', $this->content, true);
         $criteria->compare('tags', $this->tags, true);
         $criteria->compare('status', $this->status);
@@ -168,5 +171,15 @@ class Post extends CActiveRecord {
         parent::afterDelete();
         Comment::model()->deleteAll('post_id=' . $this->id);
         Tag::model()->updateFrequency($this->tags, '');
+    }
+
+    public function addComment($comment) {
+        if (Yii::app()->params['commentNeedApproval']) {
+            $comment->status = Comment::STATUS_PENDING;
+        } else {
+            $comment->status = Comment::STATUS_APPROVED;
+        }
+        $comment->post_id = $this->id;
+        return $comment->save();
     }
 }

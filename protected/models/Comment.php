@@ -28,15 +28,11 @@ class Comment extends CActiveRecord {
      * @return array validation rules for model attributes.
      */
     public function rules() {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
         return array(
-            array('author, content, status', 'required'),
-            array('status, post_id', 'numerical', 'integerOnly' => true),
-            array('author, content, email, create_time, url', 'length', 'max' => 128),
-            // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
-            array('id, author, content, status, email, create_time, url, post_id', 'safe', 'on' => 'search'),
+            array('content, author, email', 'required'),
+            array('author, email, url', 'length', 'max' => 128),
+            array('email', 'email'),
+            array('url', 'url'),
         );
     }
 
@@ -54,14 +50,13 @@ class Comment extends CActiveRecord {
      */
     public function attributeLabels() {
         return array(
-            'id' => 'ID',
-            'author' => 'Author',
-            'content' => 'Content',
-            'status' => 'Status',
+            'id' => 'Номер',
+            'content' => 'Коментар',
+            'status' => 'Статус',
+            'author' => 'Ім\'я автора',
             'email' => 'Email',
-            'create_time' => 'Create Time',
-            'url' => 'Url',
-            'post_id' => 'Post',
+            'url' => 'Website',
+            'post_id' => 'Запис',
         );
     }
 
@@ -104,5 +99,21 @@ class Comment extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+
+    protected function beforeSave() {
+        if (parent::beforeSave()) {
+            if ($this->isNewRecord) {
+                $this->create_time = time();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function approve() {
+        $this->status = Comment::STATUS_APPROVED;
+        $this->update(array('status'));
     }
 }
