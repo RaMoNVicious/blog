@@ -48,10 +48,39 @@ class PostController extends Controller {
      * @param integer $id the ID of the model to be displayed
      */
     public function actionView($id) {
+        $post = $this->loadModel();
+        $comment = $this->newComment($post);
+
         $this->render(
             'view',
-            array('model' => $this->loadModel($id))
+            array(
+                'model' => $this->loadModel($id),
+                'comment' => $comment
+            )
         );
+    }
+
+    protected function newComment($post) {
+        $comment = new Comment;
+
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'comment-form') {
+            echo CActiveForm::validate($comment);
+            Yii::app()->end();
+        }
+
+        if (isset($_POST['Comment'])) {
+            $comment->attributes = $_POST['Comment'];
+            if ($post->addComment($comment)) {
+                if ($comment->status == Comment::STATUS_PENDING) {
+                    Yii::app()->user->setFlash(
+                        'commentSubmitted',
+                        'Дякуємо за ваш коментар. Ваш коментар зʼявиться одразу після ухвалення.'
+                    );
+                }
+                $this->refresh();
+            }
+        }
+        return $comment;
     }
 
     /**

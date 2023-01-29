@@ -17,6 +17,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'title'); ?>
+		<?php echo $form->textField($model,'title',array('size'=>60,'maxlength'=>128)); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'content'); ?>
 		<?php echo $form->textField($model,'content',array('size'=>60,'maxlength'=>255)); ?>
 	</div>
