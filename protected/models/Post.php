@@ -17,6 +17,8 @@ class Post extends CActiveRecord {
     const STATUS_PUBLISHED = 2;
     const STATUS_ARCHIVED = 3;
 
+    private $_oldTags;
+
     /**
      * @return string the associated database table name
      */
@@ -136,5 +138,35 @@ class Post extends CActiveRecord {
                 'title' => $this->title,
             )
         );
+    }
+
+    protected function beforeSave() {
+        if (parent::beforeSave()) {
+            if ($this->isNewRecord) {
+                $this->create_time = $this->update_time = time();
+                $this->author_id = Yii::app()->user->id;
+            } else {
+                $this->update_time = time();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected function afterSave() {
+        parent::afterSave();
+        Tag::models()->updateFrequency($this->_oldTags, $this->tags);
+    }
+
+    protected function afterFind() {
+        parent::afterFind();
+        $this->_oldTags = $this->tags;
+    }
+
+    protected function afterDelete() {
+        parent::afterDelete();
+        Comment::model()->deleteAll('post_id=' . $this->id);
+        Tag::model()->updateFrequency($this->tags, '');
     }
 }
