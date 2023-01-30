@@ -2,7 +2,7 @@ assets/*
 !assets/.gitignore
 protected/runtime/*
 !protected/runtime/.gitignore
-protected/data/*.db
+protected/data/testdrive.db
 themes/classic/views/
 
 .idea/
