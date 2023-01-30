@@ -16,26 +16,14 @@ $this->menu = array(
 );
 ?>
 
-<h1>View Post #<?php echo $model->id; ?></h1>
-
-<?php $this->widget('zii.widgets.CDetailView', array(
-    'data' => $model,
-    'attributes' => array(
-        'id',
-        'title',
-        'content',
-        'tags',
-        'status',
-        'create_time',
-        'update_time',
-        'author_id',
-    ),
+<?php $this->renderPartial('_view', array(
+    'data'=>$model,
 )); ?>
 
 <div id="comments">
     <?php if ($model->commentCount >= 1): ?>
         <h3>
-            <?php echo $model->commentCount . 'comment(s)'; ?>
+            <?php echo $model->commentCount . ' comment(s)'; ?>
         </h3>
 
         <?php $this->renderPartial(
