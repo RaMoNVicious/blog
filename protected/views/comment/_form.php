@@ -6,14 +6,13 @@
 
 <div class="form">
 
-    <?php $form = $this->beginWidget('CActiveForm', array(
-        'id' => 'comment-form',
-        // Please note: When you enable ajax validation, make sure the corresponding
-        // controller action is handling ajax validation correctly.
-        // There is a call to performAjaxValidation() commented in generated controller code.
-        // See class documentation of CActiveForm for details on this.
-        'enableAjaxValidation' => true,
-    )); ?>
+    <?php $form = $this->beginWidget(
+        'CActiveForm',
+        array(
+            'id' => 'comment-form',
+            'enableAjaxValidation' => true,
+        )
+    ); ?>
 
     <p class="note">Fields with <span class="required">*</span> are required.</p>
 
@@ -26,27 +25,9 @@
     </div>
 
     <div class="row">
-        <?php echo $form->labelEx($model, 'content'); ?>
-        <?php echo $form->textField($model, 'content', array('size' => 60, 'maxlength' => 128)); ?>
-        <?php echo $form->error($model, 'content'); ?>
-    </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($model, 'status'); ?>
-        <?php echo $form->textField($model, 'status'); ?>
-        <?php echo $form->error($model, 'status'); ?>
-    </div>
-
-    <div class="row">
         <?php echo $form->labelEx($model, 'email'); ?>
         <?php echo $form->textField($model, 'email', array('size' => 60, 'maxlength' => 128)); ?>
         <?php echo $form->error($model, 'email'); ?>
-    </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($model, 'create_time'); ?>
-        <?php echo $form->textField($model, 'create_time', array('size' => 60, 'maxlength' => 128)); ?>
-        <?php echo $form->error($model, 'create_time'); ?>
     </div>
 
     <div class="row">
@@ -56,9 +37,9 @@
     </div>
 
     <div class="row">
-        <?php echo $form->labelEx($model, 'post_id'); ?>
-        <?php echo $form->textField($model, 'post_id'); ?>
-        <?php echo $form->error($model, 'post_id'); ?>
+        <?php echo $form->labelEx($model, 'content'); ?>
+        <?php echo CHtml::activeTextArea($model, 'content', array('rows' => 6, 'cols' => 59, 'maxlength' => 256)); ?>
+        <?php echo $form->error($model, 'content'); ?>
     </div>
 
     <div class="row buttons">

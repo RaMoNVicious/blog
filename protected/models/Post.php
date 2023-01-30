@@ -44,8 +44,6 @@ class Post extends CActiveRecord {
                 'message' => 'У тегах можна використовувати лише літери.'
             ),
             array('tags', 'normalizeTags'),
-            // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
             array('title, status', 'safe', 'on' => 'search'),
         );
     }
@@ -105,17 +103,16 @@ class Post extends CActiveRecord {
 
         $criteria = new CDbCriteria;
 
-        $criteria->compare('id', $this->id);
         $criteria->compare('title', $this->title, true);
         $criteria->compare('content', $this->content, true);
         $criteria->compare('tags', $this->tags, true);
         $criteria->compare('status', $this->status);
-        $criteria->compare('create_time', $this->create_time, true);
-        $criteria->compare('update_time', $this->update_time, true);
-        $criteria->compare('author_id', $this->author_id);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
+            'sort' => array(
+                'defaultOrder' => 'status, update_time DESC',
+            ),
         ));
     }
 
@@ -143,6 +140,16 @@ class Post extends CActiveRecord {
         );
     }
 
+    public function getTagLinks() {
+        $links = array();
+        foreach (Tag::string2array($this->tags) as $tag)
+            $links[] = CHtml::link(
+                CHtml::encode($tag),
+                array('post/index', 'tag' => $tag)
+            );
+        return $links;
+    }
+
     protected function beforeSave() {
         if (parent::beforeSave()) {
             if ($this->isNewRecord) {
@@ -159,7 +166,7 @@ class Post extends CActiveRecord {
 
     protected function afterSave() {
         parent::afterSave();
-        Tag::models()->updateFrequency($this->_oldTags, $this->tags);
+        Tag::model()->updateFrequency($this->_oldTags, $this->tags);
     }
 
     protected function afterFind() {
@@ -174,11 +181,7 @@ class Post extends CActiveRecord {
     }
 
     public function addComment($comment) {
-        if (Yii::app()->params['commentNeedApproval']) {
-            $comment->status = Comment::STATUS_PENDING;
-        } else {
-            $comment->status = Comment::STATUS_APPROVED;
-        }
+        $comment->status = Comment::STATUS_PENDING;
         $comment->post_id = $this->id;
         return $comment->save();
     }

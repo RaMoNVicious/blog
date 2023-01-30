@@ -185,11 +185,10 @@ class PostController extends Controller {
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
-     * @param integer $id the ID of the model to be loaded
      * @return Post the loaded model
      * @throws CHttpException
      */
-    public function loadModel($id) {
+    public function loadModel() {
         if ($this->_model === null) {
             if (isset($_GET['id'])) {
                 if (Yii::app()->user->isGuest) {

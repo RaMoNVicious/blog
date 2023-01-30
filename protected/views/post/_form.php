@@ -27,7 +27,7 @@
 
     <div class="row">
         <?php echo $form->labelEx($model, 'content'); ?>
-        <?php echo $form->textField($model, 'content', array('size' => 60, 'maxlength' => 255)); ?>
+        <?php echo CHtml::activeTextArea($model, 'content', array('rows' => 8, 'cols' => 59, 'maxlength' => 256)); ?>
         <?php echo $form->error($model, 'content'); ?>
     </div>
 
@@ -38,7 +38,9 @@
     </div>
 
     <div class="row">
+        <?php echo $form->labelEx($model,'status'); ?>
         <?php echo $form->dropDownList($model, 'status', Lookup::items('PostStatus')); ?>
+        <?php echo $form->error($model,'status'); ?>
     </div>
 
     <div class="row buttons">
